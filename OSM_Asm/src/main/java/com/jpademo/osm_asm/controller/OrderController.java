@@ -33,22 +33,21 @@ public class OrderController {
     public String submitOrder(@Valid @ModelAttribute("order") Order order,
                               BindingResult result,
                               Model model) {
-        // A. Kiểm tra lỗi Validate (Annotation @NotBlank, @Size...)
+        // 1. Kiểm tra Validate cơ bản (Annotation)
         if (result.hasErrors()) {
-            return "order-form"; // Nếu có lỗi, quay lại form để hiện thông báo đỏ
-        }
-
-        try {
-            // B. Gọi Service để lưu (Kiểm tra trùng Email + Sinh mã ORDxxx)
-            orderService.saveOrder(order);
-        } catch (IllegalArgumentException e) {
-            // C. Nếu trùng email -> Thêm lỗi thủ công vào field "email"
-            result.rejectValue("email", "error.order", e.getMessage());
             return "order-form";
         }
 
-        // D. Thành công -> Chuyển hướng (Redirect) để tránh resubmit form
-        // Tạm thời redirect về trang form kèm thông báo success
+        try {
+            // 2. Gọi Service
+            orderService.saveOrder(order);
+        } catch (IllegalArgumentException e) {
+            // 3. QUAN TRỌNG: Map lỗi trùng email vào đúng ô input
+            // Field cũ: "email" -> Field mới: "customer.email"
+            result.rejectValue("customer.email", "error.order", e.getMessage());
+            return "order-form";
+        }
+
         return "redirect:/order?success";
     }
 

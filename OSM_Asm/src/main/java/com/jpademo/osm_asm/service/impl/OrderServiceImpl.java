@@ -43,15 +43,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Customer> existingCustomer = customerRepository.findByEmail(formCustomer.getEmail());
 
         if (existingCustomer.isPresent()) {
-            // TÌNH HUỐNG 1: Khách hàng CŨ
-            Customer dbCustomer = existingCustomer.get();
-            // Cập nhật thông tin mới (nếu có thay đổi)
-            dbCustomer.setFirstName(formCustomer.getFirstName());
-            dbCustomer.setLastName(formCustomer.getLastName());
-            dbCustomer.setPhoneNumber(formCustomer.getPhoneNumber());
-
-            // Gán khách hàng cũ (đã có ID) vào đơn hàng
-            order.setCustomer(dbCustomer);
+            throw new IllegalArgumentException("Email already exists in the system!");
         } else {
             // TÌNH HUỐNG 2: Khách hàng MỚI TINH
             // ---> SỬA Ở ĐÂY: Lưu thủ công Khách hàng mới trước <---
