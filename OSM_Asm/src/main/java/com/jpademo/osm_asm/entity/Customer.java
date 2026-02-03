@@ -32,7 +32,10 @@ public class Customer {
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
-    // Quan hệ 1-N: Một khách hàng có nhiều đơn hàng
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_id")
+    private Country country;
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 }

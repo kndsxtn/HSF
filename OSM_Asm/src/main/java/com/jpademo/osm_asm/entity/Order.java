@@ -18,9 +18,8 @@ public class Order {
     @Column(name = "order_id", length = 10)
     private String  orderId;
 
-    // --- Thay đổi lớn nhất ở đây ---
-    // Thay vì lưu tên/email trực tiếp, ta lưu object Customer
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // <--- Bắt buộc phải có cascade = CascadeType.ALL
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id", nullable = false)
     @Valid
     private Customer customer;
@@ -32,7 +31,7 @@ public class Order {
     private String addressLine2;
 
     @NotBlank(message = "City is required")
-    private String city; // Giữ nguyên String cho đơn giản
+    private String city;
 
     private String region;
 
@@ -40,7 +39,7 @@ public class Order {
     private String postalCode;
 
     @NotBlank(message = "Country is required")
-    private String country; // Giữ nguyên String
+    private String country;
 
     @Column(name = "order_date")
     private LocalDateTime orderDate;

@@ -19,31 +19,23 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-
-    // 1. Hiển thị form đặt hàng (GET Request)
     @GetMapping("/order")
     public String showOrderForm(Model model) {
-        // Tạo một object rỗng để hứng dữ liệu từ form
         model.addAttribute("order", new Order());
-        return "order-form"; // Trả về file order-form.html
+        return "order-form";
     }
 
-    // 2. Xử lý khi nhấn nút "Add" (POST Request)
     @PostMapping("/order")
     public String submitOrder(@Valid @ModelAttribute("order") Order order,
                               BindingResult result,
                               Model model) {
-        // 1. Kiểm tra Validate cơ bản (Annotation)
         if (result.hasErrors()) {
             return "order-form";
         }
 
         try {
-            // 2. Gọi Service
             orderService.saveOrder(order);
         } catch (IllegalArgumentException e) {
-            // 3. QUAN TRỌNG: Map lỗi trùng email vào đúng ô input
-            // Field cũ: "email" -> Field mới: "customer.email"
             result.rejectValue("customer.email", "error.order", e.getMessage());
             return "order-form";
         }
@@ -51,24 +43,18 @@ public class OrderController {
         return "redirect:/order?success";
     }
 
-    // 3. Hiển thị danh sách đơn hàng (GET Request)
-    @GetMapping("/orders") // Đường dẫn là /orders
+
+    @GetMapping("/orders")
     public String listOrders(Model model) {
-        // Gọi Service lấy toàn bộ danh sách
         model.addAttribute("orders", orderService.getAllOrders());
-        return "order-list"; // Trả về file order-list.html
+        return "order-list";
     }
 
-    // 4. Xem chi tiết đơn hàng (GET Request với ID động)
+
     @GetMapping("/order/{id}")
     public String viewOrderDetails(@PathVariable("id") String orderId, Model model) {
-        // Gọi Service tìm order theo ID
-        // Nếu không thấy, Service sẽ ném lỗi (bạn có thể try-catch nếu muốn kỹ hơn)
         Order order = orderService.getOrderById(orderId);
-
-        // Gửi object order sang view
         model.addAttribute("order", order);
-
-        return "order-detail"; // Trả về file order-detail.html
+        return "order-detail";
     }
 }
