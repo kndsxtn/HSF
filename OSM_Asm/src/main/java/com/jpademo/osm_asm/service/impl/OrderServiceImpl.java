@@ -41,7 +41,6 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void saveOrder(Order order) {
         Customer formCustomer = order.getCustomer();
-
         String countryNameInput = order.getCountry();
 
         Country countryEntity = countryRepository.findByCountryName(countryNameInput)
@@ -73,12 +72,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private String generateOrderId() {
-        Order lastOrder = orderRepository.findTopByOrderByOrderIdDesc();
-        if (lastOrder == null) {
+        Optional<Order> lastOrderOpt = orderRepository.findTopByOrderByOrderIdDesc();
+        
+        if (lastOrderOpt.isEmpty()) {
             return "ORD001";
         }
 
-        String lastId = lastOrder.getOrderId(); // VD: "ORD005"
+        String lastId = lastOrderOpt.get().getOrderId(); // VD: "ORD005"
         try {
             int number = Integer.parseInt(lastId.substring(3));
             int nextNumber = number + 1;

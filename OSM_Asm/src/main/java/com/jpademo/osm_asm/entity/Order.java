@@ -24,7 +24,6 @@ public class Order {
     @Valid
     private Customer customer;
 
-    // --- Các thông tin giao hàng (Shipping) giữ nguyên ---
     @NotBlank(message = "Address is required")
     private String addressLine1;
 
